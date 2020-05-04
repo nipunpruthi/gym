@@ -110,138 +110,144 @@ class TaxiEnv(discrete.DiscreteEnv):
                                                         orig_dest.append(
                                                             (pass_idx, dest_idx))
                                                         state = self.encode(
-                                                            row, col, pass_idx, dest_idx)
+                                                            row, col, orig_dest)
                                                         if pass_idx < 4 and pass_idx != dest_idx:
                                                             initial_state_distrib[state] += 1
                                                         for action in range(num_actions):
                                                             # defaults
-                                                        new_row, new_col, new_pass_idx = row, col, pass_idx
-                                                        reward = -1  # default reward when there is no pickup/dropoff
-                                                        done1 = done2 = done3 = done4 = done5 = False
-                                                        taxi_loc = (row, col)
+                                                            new_row, new_col, new_pass_idx = row, col, pass_idx
+                                                            reward = -1  # default reward when there is no pickup/dropoff
+                                                            done1 = done2 = done3 = done4 = done5 = False
+                                                            taxi_loc = (
+                                                                row, col)
 
-                                                        if action == 0:
-                                                            new_row = min(
-                                                                row + 1, max_row)
-                                                        elif action == 1:
-                                                            new_row = max(
-                                                                row - 1, 0)
-                                                        if action == 2 and self.desc[1 + row, 2 * col + 2] == b":":
-                                                            new_col = min(
-                                                                col + 1, max_col)
-                                                        elif action == 3 and self.desc[1 + row, 2 * col] == b":":
-                                                            new_col = max(
-                                                                col - 1, 0)
-                                                        elif action == 4:  # pickup 0
-                                                            pass_idx = orig_dest[2][0][0]
-                                                            if (pass_idx < 4 and taxi_loc == locs[pass_idx]):
-                                                                new_pass_idx = orig_dest[2][0][0] = 4
-                                                            else:  # passenger not at location
-                                                                reward = -10
-                                                        elif action == 5:  # dropoff 0
-                                                            pass_idx = orig_dest[2][0][0]
-                                                            dest_idx = orig_dest[2][0][1]
-                                                            if (taxi_loc == locs[dest_idx]) and pass_idx == 4:
-                                                                new_pass_idx = orig_dest[2][0][0] = dest_idx
-                                                                done0 = True
-                                                                reward = 20
-                                                            elif (taxi_loc in locs) and pass_idx == 4:
-                                                                new_pass_idx = orig_dest[2][0][0] = locs.index(
-                                                                    taxi_loc)
-                                                            else:  # dropoff at wrong location
-                                                                reward = -10
+                                                            if action == 0:
+                                                                new_row = min(
+                                                                    row + 1, max_row)
+                                                            elif action == 1:
+                                                                new_row = max(
+                                                                    row - 1, 0)
+                                                            if action == 2 and self.desc[1 + row, 2 * col + 2] == b":":
+                                                                new_col = min(
+                                                                    col + 1, max_col)
+                                                            elif action == 3 and self.desc[1 + row, 2 * col] == b":":
+                                                                new_col = max(
+                                                                    col - 1, 0)
+                                                            elif action == 4:  # pickup 0
+                                                                pass_idx = orig_dest[2][0][0]
+                                                                if (pass_idx < 4 and taxi_loc == locs[pass_idx]):
+                                                                    new_pass_idx = orig_dest[2][0][0] = 4
+                                                                else:  # passenger not at location
+                                                                    reward = -10
+                                                            elif action == 5:  # dropoff 0
+                                                                pass_idx = orig_dest[2][0][0]
+                                                                dest_idx = orig_dest[2][0][1]
+                                                                if (taxi_loc == locs[dest_idx]) and pass_idx == 4:
+                                                                    new_pass_idx = orig_dest[2][0][0] = dest_idx
+                                                                    done0 = True
+                                                                    reward = 20
+                                                                elif (taxi_loc in locs) and pass_idx == 4:
+                                                                    new_pass_idx = orig_dest[2][0][0] = locs.index(
+                                                                        taxi_loc)
+                                                                else:  # dropoff at wrong location
+                                                                    reward = -10
 
-                                                        elif action == 6:  # pickup 1
-                                                            pass_idx = orig_dest[2][1][0]
-                                                            if (pass_idx < 4 and taxi_loc == locs[pass_idx]):
-                                                                new_pass_idx = orig_dest[2][1][0] = 4
-                                                            else:  # passenger not at location
-                                                                reward = -10
-                                                        elif action == 7:  # dropoff 1
-                                                            pass_idx = orig_dest[2][1][0]
-                                                            dest_idx = orig_dest[2][1][1]
-                                                            if (taxi_loc == locs[dest_idx]) and pass_idx == 4:
-                                                                new_pass_idx = orig_dest[2][1][0] = dest_idx
-                                                                done1 = True
-                                                                reward = 20
-                                                            elif (taxi_loc in locs) and pass_idx == 4:
-                                                                new_pass_idx = orig_dest[2][1][0] = locs.index(
-                                                                    taxi_loc)
-                                                            else:  # dropoff at wrong location
-                                                                reward = -10
+                                                            elif action == 6:  # pickup 1
+                                                                pass_idx = orig_dest[2][1][0]
+                                                                if (pass_idx < 4 and taxi_loc == locs[pass_idx]):
+                                                                    new_pass_idx = orig_dest[2][1][0] = 4
+                                                                else:  # passenger not at location
+                                                                    reward = -10
+                                                            elif action == 7:  # dropoff 1
+                                                                pass_idx = orig_dest[2][1][0]
+                                                                dest_idx = orig_dest[2][1][1]
+                                                                if (taxi_loc == locs[dest_idx]) and pass_idx == 4:
+                                                                    new_pass_idx = orig_dest[2][1][0] = dest_idx
+                                                                    done1 = True
+                                                                    reward = 20
+                                                                elif (taxi_loc in locs) and pass_idx == 4:
+                                                                    new_pass_idx = orig_dest[2][1][0] = locs.index(
+                                                                        taxi_loc)
+                                                                else:  # dropoff at wrong location
+                                                                    reward = -10
 
-                                                        elif action == 8:  # pickup 2
-                                                            pass_idx = orig_dest[2][2][0]
-                                                            if (pass_idx < 4 and taxi_loc == locs[pass_idx]):
-                                                                new_pass_idx = orig_dest[2][2][0] = 4
-                                                            else:  # passenger not at location
-                                                                reward = -10
-                                                        elif action == 9:  # dropoff 2
-                                                            pass_idx = orig_dest[2][2][0]
-                                                            dest_idx = orig_dest[2][2][1]
-                                                            if (taxi_loc == locs[dest_idx]) and pass_idx == 4:
-                                                                new_pass_idx = orig_dest[2][2][0] = dest_idx
-                                                                done2 = True
-                                                                reward = 20
-                                                            elif (taxi_loc in locs) and pass_idx == 4:
-                                                                new_pass_idx = orig_dest[2][2][0] = locs.index(
-                                                                    taxi_loc)
-                                                            else:  # dropoff at wrong location
-                                                                reward = -10
+                                                            elif action == 8:  # pickup 2
+                                                                pass_idx = orig_dest[2][2][0]
+                                                                if (pass_idx < 4 and taxi_loc == locs[pass_idx]):
+                                                                    new_pass_idx = orig_dest[2][2][0] = 4
+                                                                else:  # passenger not at location
+                                                                    reward = -10
+                                                            elif action == 9:  # dropoff 2
+                                                                pass_idx = orig_dest[2][2][0]
+                                                                dest_idx = orig_dest[2][2][1]
+                                                                if (taxi_loc == locs[dest_idx]) and pass_idx == 4:
+                                                                    new_pass_idx = orig_dest[2][2][0] = dest_idx
+                                                                    done2 = True
+                                                                    reward = 20
+                                                                elif (taxi_loc in locs) and pass_idx == 4:
+                                                                    new_pass_idx = orig_dest[2][2][0] = locs.index(
+                                                                        taxi_loc)
+                                                                else:  # dropoff at wrong location
+                                                                    reward = -10
 
-                                                        elif action == 10:  # pickup 3
-                                                            pass_idx = orig_dest[2][3][0]
-                                                            if (pass_idx < 4 and taxi_loc == locs[pass_idx]):
-                                                                new_pass_idx = orig_dest[2][3][0] = 4
-                                                            else:  # passenger not at location
-                                                                reward = -10
-                                                        elif action == 11:  # dropoff 1
-                                                            pass_idx = orig_dest[2][3][0]
-                                                            dest_idx = orig_dest[2][3][1]
-                                                            if (taxi_loc == locs[dest_idx]) and pass_idx == 4:
-                                                                new_pass_idx = orig_dest[2][4][0] = dest_idx
-                                                                done3 = True
-                                                                reward = 20
-                                                            elif (taxi_loc in locs) and pass_idx == 4:
-                                                                new_pass_idx = orig_dest[2][4][0] = locs.index(
-                                                                    taxi_loc)
-                                                            else:  # dropoff at wrong location
-                                                                reward = -10
+                                                            elif action == 10:  # pickup 3
+                                                                pass_idx = orig_dest[2][3][0]
+                                                                if (pass_idx < 4 and taxi_loc == locs[pass_idx]):
+                                                                    new_pass_idx = orig_dest[2][3][0] = 4
+                                                                else:  # passenger not at location
+                                                                    reward = -10
+                                                            elif action == 11:  # dropoff 1
+                                                                pass_idx = orig_dest[2][3][0]
+                                                                dest_idx = orig_dest[2][3][1]
+                                                                if (taxi_loc == locs[dest_idx]) and pass_idx == 4:
+                                                                    new_pass_idx = orig_dest[2][4][0] = dest_idx
+                                                                    done3 = True
+                                                                    reward = 20
+                                                                elif (taxi_loc in locs) and pass_idx == 4:
+                                                                    new_pass_idx = orig_dest[2][4][0] = locs.index(
+                                                                        taxi_loc)
+                                                                else:  # dropoff at wrong location
+                                                                    reward = -10
 
-                                                        elif action == 12:  # pickup 4
-                                                            pass_idx = orig_dest[2][4][0]
-                                                            if (pass_idx < 4 and taxi_loc == locs[pass_idx]):
-                                                                new_pass_idx = orig_dest[2][4][0] = 4
-                                                            else:  # passenger not at location
-                                                                reward = -10
-                                                        elif action == 13:  # dropoff 1
-                                                            pass_idx = orig_dest[2][4][0]
-                                                            dest_idx = orig_dest[2][4][1]
-                                                            if (taxi_loc == locs[dest_idx]) and pass_idx == 4:
-                                                                new_pass_idx = orig_dest[2][4][0] = dest_idx
-                                                                done4 = True
-                                                                reward = 20
-                                                            elif (taxi_loc in locs) and pass_idx == 4:
-                                                                new_pass_idx = orig_dest[2][4][0] = locs.index(
-                                                                    taxi_loc)
-                                                            else:  # dropoff at wrong location
-                                                                reward = -10
+                                                            elif action == 12:  # pickup 4
+                                                                pass_idx = orig_dest[2][4][0]
+                                                                if (pass_idx < 4 and taxi_loc == locs[pass_idx]):
+                                                                    new_pass_idx = orig_dest[2][4][0] = 4
+                                                                else:  # passenger not at location
+                                                                    reward = -10
+                                                            elif action == 13:  # dropoff 1
+                                                                pass_idx = orig_dest[2][4][0]
+                                                                dest_idx = orig_dest[2][4][1]
+                                                                if (taxi_loc == locs[dest_idx]) and pass_idx == 4:
+                                                                    new_pass_idx = orig_dest[2][4][0] = dest_idx
+                                                                    done4 = True
+                                                                    reward = 20
+                                                                elif (taxi_loc in locs) and pass_idx == 4:
+                                                                    new_pass_idx = orig_dest[2][4][0] = locs.index(
+                                                                        taxi_loc)
+                                                                else:  # dropoff at wrong location
+                                                                    reward = -10
 
-                                                        new_state = self.encode(
-                                                            new_row, new_col, orig_dest))
-                                                        P[state][action].append(
-                                                            (1.0, new_state, reward, done0, done1, done2, done3, done4, done5))
+                                                            new_state = self.encode(
+                                                                new_row, new_col, orig_dest)
+                                                            P[state][action].append(
+                                                                (1.0, new_state, reward, done0, done1, done2, done3, done4, done5))
+                                                            orig_dest.pop()
+                                                orig_dest.pop()
+                                        orig_dest.pop()
+                                orig_dest.pop()
+                        orig_dest.pop()
         initial_state_distrib /= initial_state_distrib.sum()
         discrete.DiscreteEnv.__init__(
             self, num_states, num_actions, P, initial_state_distrib)
 
     def encode(self, taxi_row, taxi_col, orig_dest):
         # (5) 5, [(5,4),(5,4)]
-        i=taxi_row
+        i = taxi_row
         i *= 5
         i += taxi_col
 
-        num_passgr=len(orig_dest)
+        num_passgr = len(orig_dest)
         for pd in orig_dest:
             i *= 5
             i += pd[0]
@@ -251,48 +257,46 @@ class TaxiEnv(discrete.DiscreteEnv):
         return i
 
     def decode(self, i):
-        out=[]
-        out1=[]
+        out = []
+        out1 = []
         for i in range(5):
-            a=i % 4
+            a = i % 4
             out.append(a)
-            i=i // 4
-            b=i % 5
+            i = i // 4
+            b = i % 5
             out.append(b)
-            i=i // 5
+            i = i // 5
             out1.append(b, a)
 
         out.append(i % 5)
-        i=i//5
+        i = i//5
         out.append(i)
         assert 0 <= i < 5
-
-
-        out=out.reverse()
+        out = out.reverse()
         out.append(out1)
         return reversed(out)
 
-    def render(self, mode = 'human'):
-        outfile=StringIO() if mode == 'ansi' else sys.stdout
+    def render(self, mode='human'):
+        outfile = StringIO() if mode == 'ansi' else sys.stdout
 
-        out=self.desc.copy().tolist()
-        out=[[c.decode('utf-8') for c in line] for line in out]
-        taxi_row, taxi_col, pass_idx, dest_idx=self.decode(self.s)
+        out = self.desc.copy().tolist()
+        out = [[c.decode('utf-8') for c in line] for line in out]
+        taxi_row, taxi_col, pass_idx, dest_idx = self.decode(self.s)
 
         def ul(x): return "_" if x == " " else x
         if pass_idx < 4:
-            out[1 + taxi_row][2 * taxi_col + 1]=utils.colorize(
-                out[1 + taxi_row][2 * taxi_col + 1], 'yellow', highlight = True)
-            pi, pj=self.locs[pass_idx]
+            out[1 + taxi_row][2 * taxi_col + 1] = utils.colorize(
+                out[1 + taxi_row][2 * taxi_col + 1], 'yellow', highlight=True)
+            pi, pj = self.locs[pass_idx]
             out[1 + pi][2 * pj +
-                        1]= utils.colorize(out[1 + pi][2 * pj + 1], 'blue', bold=True)
+                        1] = utils.colorize(out[1 + pi][2 * pj + 1], 'blue', bold=True)
         else:  # passenger in taxi
-            out[1 + taxi_row][2 * taxi_col + 1]= utils.colorize(
-                ul(out[1 + taxi_row][2 * taxi_col + 1]), 'green', highlight = True)
+            out[1 + taxi_row][2 * taxi_col + 1] = utils.colorize(
+                ul(out[1 + taxi_row][2 * taxi_col + 1]), 'green', highlight=True)
 
-        di, dj=self.locs[dest_idx]
+        di, dj = self.locs[dest_idx]
         out[1 + di][2 * dj +
-                    1]= utils.colorize(out[1 + di][2 * dj + 1], 'magenta')
+                    1] = utils.colorize(out[1 + di][2 * dj + 1], 'magenta')
         outfile.write("\n".join(["".join(row) for row in out]) + "\n")
         if self.lastaction is not None:
             outfile.write("  ({})\n".format(
